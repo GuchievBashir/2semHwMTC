@@ -27,7 +27,7 @@ public class UniversitiesController {
     return ResponseEntity.ok(universities);
   }
 
-  @RequestMapping
+  @PostMapping
   public ResponseEntity<University> createUniversity(@Valid University university) {
     University createdUniversity = universitiesService.createUniversity(university);
     log.info(".createUniversity {}", createdUniversity);

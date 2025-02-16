@@ -8,12 +8,12 @@ import lombok.Data;
 public class Book {
 
   @Size(min = 10, max = 100)
-  int id;
+  private String id;
 
   @NotEmpty
-  String title;
+  private String title;
 
   @NotEmpty
-  String author;
+  private String author;
 
 }

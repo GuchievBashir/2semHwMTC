@@ -8,7 +8,7 @@ import lombok.Data;
 public class University {
 
   @Size(min = 10, max = 100)
-  private int id;
+  private String id;
 
   @NotEmpty
   private String name;

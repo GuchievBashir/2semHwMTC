@@ -27,7 +27,7 @@ public class CoursesController {
     return ResponseEntity.ok(courses);
   }
 
-  @RequestMapping
+  @PostMapping
   public ResponseEntity<Course> createCourse(@Valid @RequestBody Course course) {
     Course createdCourse = coursesService.createCourse(course);
     log.info(".createCourse {}", createdCourse);

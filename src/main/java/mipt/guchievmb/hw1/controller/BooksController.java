@@ -27,7 +27,7 @@ public class BooksController {
     return ResponseEntity.ok(books);
   }
 
-  @RequestMapping
+  @PostMapping
   public ResponseEntity<Book> createUser(@RequestBody @Valid Book book) {
     Book createdBook = booksService.createBook(book);
     log.info(".createBook {}", createdBook);
