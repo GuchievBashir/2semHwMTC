@@ -1,5 +1,7 @@
 package mipt.guchievmb.hw1.controller;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,21 +12,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
 @RequiredArgsConstructor
+@RateLimiter(name = "apiLimiter")
+@CircuitBreaker(name = "apiCB", fallbackMethod = "fallback")
 public class UsersController implements UsersControllerApi {
 
   private final UsersService usersService;
 
   @Override
   @GetMapping
-  public ResponseEntity<Collection<User>> getAllUsers() {
-    Collection<User> users = usersService.getAllUsers();
-    log.info("Получение всех пользователей: {}", users);
-    return ResponseEntity.ok(users);
+  public CompletableFuture<ResponseEntity<Collection<User>>> getAllUsers() {
+    return usersService.getAllUsers()
+            .thenApply(users -> {
+              log.info("Получение всех пользователей: {}", users);
+              return ResponseEntity.ok(users);
+            });
   }
 
   @Override
@@ -66,5 +73,9 @@ public class UsersController implements UsersControllerApi {
     usersService.deleteUser(id);
     log.info("Удаление пользователя с id: {}", id);
     return ResponseEntity.noContent().build();
+  }
+
+  public String fallback(Throwable t) {
+    return "Service temporarily unavailable";
   }
 }

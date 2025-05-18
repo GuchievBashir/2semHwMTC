@@ -12,10 +12,12 @@ import java.time.Instant;
 @Aspect
 @Component
 public class LoggingAspect {
+  private int counter = 0;
 
   @Before("execution(* mipt.guchievmb.hw1.controller..*(..))")
   public void logBeforeControllers(JoinPoint jp) {
     System.out.println("Вызов контроллера: " + jp.getSignature().getName());
+    counter++;
   }
 
   @Around("execution(* mipt.guchievmb.hw1.controller..*(..))")
@@ -26,8 +28,12 @@ public class LoggingAspect {
     System.out.println("Метод " + pjp.getSignature().getName() +
             " выполнен за " +
             Duration.between(start, end).toMillis() + " мс");
+    counter++;
     return result;
   }
 
+  public int getCounter() {
+    return counter;
+  }
 }
 

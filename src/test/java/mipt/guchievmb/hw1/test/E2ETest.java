@@ -1,6 +1,8 @@
 package mipt.guchievmb.hw1.test;
 
+import mipt.guchievmb.hw1.Application;
 import mipt.guchievmb.hw1.model.User;
+import mipt.guchievmb.hw1.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@ContextConfiguration(classes={Application.class, SecurityConfig.class})
 public class E2ETest {
 
   @Autowired

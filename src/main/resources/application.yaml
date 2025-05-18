@@ -1,6 +1,12 @@
 spring:
   application:
     name: spring-with-openapi
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 10
+        queue-capacity: 25
 springdoc:
   swagger-ui:
     enabled: true
@@ -17,3 +23,14 @@ management:
         include: "*"
         exclude: shutdown
       base-path: /admin/actuator
+
+resilience4j.ratelimiter.instances.apiLimiter:
+  limit-for-period: 10
+  limit-refresh-period: 1s
+  timeout-duration: 0
+
+resilience4j.circuitbreaker.instances.apiCB:
+  failure-rate-threshold: 50
+  wait-duration-in-open-state: 5s
+  sliding-window-size: 10
+  sliding-window-type: count_based

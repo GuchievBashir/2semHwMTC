@@ -2,4 +2,4 @@ spring:
   application:
     name: test
 server:
-  port: 8081
+  port: 0

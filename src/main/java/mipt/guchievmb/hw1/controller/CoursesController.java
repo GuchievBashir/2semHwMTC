@@ -1,5 +1,6 @@
 package mipt.guchievmb.hw1.controller;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.Collection;
 @RequestMapping("/courses")
 @Slf4j
 @RequiredArgsConstructor
+@CircuitBreaker(name = "apiCB", fallbackMethod = "fallback")
 public class CoursesController implements CoursesControllerApi {
   private final CoursesService coursesService;
 
@@ -34,6 +36,10 @@ public class CoursesController implements CoursesControllerApi {
     Course createdCourse = coursesService.createCourse(course);
     log.info(".createCourse {}", createdCourse);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
+  }
+
+  public String fallback(Throwable t) {
+    return "Service temporarily unavailable";
   }
 }
 

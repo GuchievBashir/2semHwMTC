@@ -5,11 +5,15 @@ import mipt.guchievmb.hw1.exception.UserNotFoundException;
 import mipt.guchievmb.hw1.model.Book;
 import mipt.guchievmb.hw1.model.User;
 import mipt.guchievmb.hw1.repository.UsersRepository;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -21,8 +25,9 @@ public class UsersService {
     this.usersRepository = usersRepository;
   }
 
-  public Collection<User> getAllUsers() {
-    return usersRepository.getAllUsers();
+  @Async
+  public CompletableFuture<Collection<User>> getAllUsers() {
+    return CompletableFuture.completedFuture(usersRepository.getAllUsers());
   }
 
   public User getUserById(String id) {
@@ -30,9 +35,17 @@ public class UsersService {
   }
 
   public User createUser(User user) {
+    //Если уже есть с таким name, вывести его
+    for (User currentUser: usersRepository.getAllUsers()) {
+      if (currentUser.getName().equals(user.getName())) {
+        System.out.println("Книга с таким именем уже существует");
+        return currentUser;
+      }
+    }
     return usersRepository.createUser(user);
   }
 
+  @Retryable(retryFor = UserNotFoundException.class, maxAttempts = 5, backoff = @Backoff(delay = 10000))
   public User updateUser(User user) {
     User updatedUser = usersRepository.getUserById(user.getId()).orElseThrow(() -> new UserNotFoundException(user.getId()));
     updatedUser.setName(user.getName());

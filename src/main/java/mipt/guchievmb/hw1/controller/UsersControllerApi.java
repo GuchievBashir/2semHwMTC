@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
 @Tag(name = "Users API", description = "Операции для работы с пользователями")
 public interface UsersControllerApi {
@@ -19,7 +20,7 @@ public interface UsersControllerApi {
   @ApiResponses({
           @ApiResponse(responseCode = "200", description = "Список успешно получен")
   })
-  ResponseEntity<Collection<User>> getAllUsers();
+  CompletableFuture<ResponseEntity<Collection<User>>> getAllUsers();
 
   @Operation(summary = "Получение пользователя по id", description = "Возвращает пользователя по заданному идентификатору")
   @ApiResponses({
