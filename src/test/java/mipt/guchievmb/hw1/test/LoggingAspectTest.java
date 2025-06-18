@@ -4,7 +4,6 @@ import mipt.guchievmb.hw1.controller.UsersController;
 import mipt.guchievmb.hw1.service.UsersService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -14,6 +13,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -21,7 +21,6 @@ import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class LoggingAspectTest {
 
   @Container
@@ -43,7 +42,8 @@ public class LoggingAspectTest {
 
   @Test
   public void testAspectIsCalled() {
-    doReturn(Collections.emptyList()).when(usersService).getAllUsers();
+    doReturn(CompletableFuture.completedFuture(Collections.emptyList()))
+            .when(usersService).getAllUsers();
 
     userController.getAllUsers();
 
