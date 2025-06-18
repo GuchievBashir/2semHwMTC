@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mipt.guchievmb.hw1.controller.UsersController;
 import mipt.guchievmb.hw1.exception.UserNotFoundException;
 import mipt.guchievmb.hw1.model.User;
-import mipt.guchievmb.hw1.security.JWTLoggingFilter;
-import mipt.guchievmb.hw1.security.SecurityConfig;
 import mipt.guchievmb.hw1.service.UsersService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +19,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UsersController.class)
-@Import(SecurityConfig.class)
 public class UsersControllerTest {
 
   @Autowired
@@ -30,8 +27,6 @@ public class UsersControllerTest {
   @MockBean
   private UsersService usersService;
 
-  @MockBean
-  private JWTLoggingFilter jwtLoggingFilter;
 
   @Test
   @DisplayName("Should return user by ID when user exists")
