@@ -13,11 +13,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
-import java.util.concurrent.CompletableFuture;
 
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Testcontainers
@@ -43,8 +41,7 @@ public class LoggingAspectTest {
 
   @Test
   public void testAspectIsCalled() {
-    doReturn(CompletableFuture.completedFuture(Collections.emptyList()))
-            .when(usersService).getAllUsers();
+    when(usersService.getAllUsers()).thenReturn(Collections.emptyList());
 
     userController.getAllUsers();
 
