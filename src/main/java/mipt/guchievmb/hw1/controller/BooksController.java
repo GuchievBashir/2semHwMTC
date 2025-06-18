@@ -2,36 +2,38 @@ package mipt.guchievmb.hw1.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import mipt.guchievmb.hw1.model.Book;
-import mipt.guchievmb.hw1.model.User;
 import mipt.guchievmb.hw1.service.BooksService;
-import mipt.guchievmb.hw1.service.UsersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Collection;
 
 @RestController
 @RequestMapping("/books")
-@Slf4j
 @RequiredArgsConstructor
-public class BooksController {
+public class BooksController implements BooksControllerApi {
+
   private final BooksService booksService;
 
   @GetMapping
   public ResponseEntity<Collection<Book>> getAllBooks() {
-    Collection<Book> books = booksService.getAllBooks();
-    log.info(".getAllBooks {}", books);
-    return ResponseEntity.ok(books);
+    return ResponseEntity.ok(booksService.getAllBooks());
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+    return ResponseEntity.ok(booksService.getBookById(id));
   }
 
   @PostMapping
-  public ResponseEntity<Book> createUser(@RequestBody @Valid Book book) {
-    Book createdBook = booksService.createBook(book);
-    log.info(".createBook {}", createdBook);
-    return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
+  public ResponseEntity<Book> createBook(@RequestBody @Valid Book book, @RequestParam Long authorId) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(booksService.createBook(book, authorId));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+    booksService.deleteBook(id);
+    return ResponseEntity.noContent().build();
   }
 }
-

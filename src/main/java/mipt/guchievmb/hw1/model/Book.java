@@ -1,19 +1,25 @@
 package mipt.guchievmb.hw1.model;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@Entity
+@Table(name = "books")
 public class Book {
 
-  @Size(min = 10, max = 100)
-  private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  @NotEmpty
+  @Column(name = "title", nullable = false)
   private String title;
 
-  @NotEmpty
-  private String author;
-
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "author_id", nullable = false)
+  @JsonBackReference
+  private User author;
 }

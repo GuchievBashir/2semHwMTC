@@ -1,22 +1,29 @@
 package mipt.guchievmb.hw1.model;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
+@Entity
+@Table(name = "users")
 public class User {
 
-  @Size(min = 10, max = 100)
-  private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  @NotEmpty
+  @Column(name = "name", nullable = false)
   private String name;
 
-  @Min(10)
-  @Max(100)
+  @Column(name = "age")
   private int age;
 
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
+  private List<Book> books = new ArrayList<>();
 }

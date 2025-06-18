@@ -1,27 +1,40 @@
 package mipt.guchievmb.hw1.service;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import mipt.guchievmb.hw1.model.University;
 import mipt.guchievmb.hw1.repository.UniversitiesRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.NoSuchElementException;
 
-@Slf4j
 @Service
+@RequiredArgsConstructor
 public class UniversitiesService {
+
   private final UniversitiesRepository universitiesRepository;
 
-  public UniversitiesService(UniversitiesRepository universitiesRepository) {
-    this.universitiesRepository = universitiesRepository;
-  }
-
+  @Transactional(readOnly = true)
   public Collection<University> getAllUniversities() {
-    return Collections.emptyList();
+    return universitiesRepository.findAll();
   }
 
+  @Transactional(readOnly = true)
+  public University getUniversityById(Long id) {
+    return universitiesRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("University with id " + id + " not found"));
+  }
+
+  @Transactional
   public University createUniversity(University university) {
-    return university;
+    return universitiesRepository.save(university);
+  }
+
+  @Transactional
+  public void deleteUniversity(Long id) {
+    if (!universitiesRepository.existsById(id)) {
+      throw new NoSuchElementException("University with id " + id + " not found");
+    }
+    universitiesRepository.deleteById(id);
   }
 }
