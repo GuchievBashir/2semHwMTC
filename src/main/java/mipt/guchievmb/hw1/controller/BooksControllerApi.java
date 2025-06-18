@@ -15,58 +15,35 @@ import java.util.Collection;
 @Tag(name = "Books API", description = "Операции для работы с книгами")
 public interface BooksControllerApi {
 
-  @Operation(summary = "Получение всех книг", description = "Возвращает список всех книг")
-  @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Список успешно получен")
-  })
+  @Operation(summary = "Получение всех книг")
   ResponseEntity<Collection<Book>> getAllBooks();
 
-  @Operation(summary = "Получение книги по id", description = "Возвращает книгу по заданному идентификатору")
+  @Operation(summary = "Получение книги по id")
   @ApiResponses({
           @ApiResponse(responseCode = "200", description = "Книга найдена"),
           @ApiResponse(responseCode = "404", description = "Книга не найдена")
   })
   ResponseEntity<Book> getBookById(
           @Parameter(description = "Идентификатор книги", required = true)
-          @PathVariable String id);
+          @PathVariable Long id);
 
-  @Operation(summary = "Создание книги", description = "Создает новую книгу")
+  @Operation(summary = "Создание книги")
   @ApiResponses({
           @ApiResponse(responseCode = "201", description = "Книга успешно создана"),
           @ApiResponse(responseCode = "400", description = "Ошибка валидации входных данных")
   })
   ResponseEntity<Book> createBook(
           @Parameter(description = "Объект книги для создания", required = true)
-          @RequestBody @Valid Book book);
+          @RequestBody @Valid Book book,
+          @Parameter(description = "ID автора книги", required = true)
+          @RequestParam Long authorId);
 
-  @Operation(summary = "Обновление книги", description = "Полное обновление книги")
-  @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Книга успешно обновлена"),
-          @ApiResponse(responseCode = "404", description = "Книга не найдена")
-  })
-  ResponseEntity<Book> updateBook(
-          @Parameter(description = "Идентификатор книги", required = true)
-          @PathVariable String id,
-          @Parameter(description = "Обновленные данные книги", required = true)
-          @RequestBody @Valid Book book);
-
-  @Operation(summary = "Частичное обновление книги", description = "Обновляет только переданные поля книги")
-  @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Книга успешно обновлена"),
-          @ApiResponse(responseCode = "404", description = "Книга не найдена")
-  })
-  ResponseEntity<Book> patchBook(
-          @Parameter(description = "Идентификатор книги", required = true)
-          @PathVariable String id,
-          @Parameter(description = "Данные для частичного обновления книги", required = true)
-          @RequestBody Book patchData);
-
-  @Operation(summary = "Удаление книги", description = "Удаляет книгу по заданному идентификатору")
+  @Operation(summary = "Удаление книги")
   @ApiResponses({
           @ApiResponse(responseCode = "204", description = "Книга успешно удалена"),
           @ApiResponse(responseCode = "404", description = "Книга не найдена")
   })
   ResponseEntity<Void> deleteBook(
           @Parameter(description = "Идентификатор книги", required = true)
-          @PathVariable String id);
+          @PathVariable Long id);
 }

@@ -11,27 +11,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 
 @Tag(name = "Users API", description = "Операции для работы с пользователями")
 public interface UsersControllerApi {
 
-  @Operation(summary = "Получение всех пользователей", description = "Возвращает список всех пользователей")
-  @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Список успешно получен")
-  })
-  CompletableFuture<ResponseEntity<Collection<User>>> getAllUsers();
+  @Operation(summary = "Получение всех пользователей")
+  ResponseEntity<Collection<User>> getAllUsers();
 
-  @Operation(summary = "Получение пользователя по id", description = "Возвращает пользователя по заданному идентификатору")
+  @Operation(summary = "Получение пользователя по id")
   @ApiResponses({
           @ApiResponse(responseCode = "200", description = "Пользователь найден"),
           @ApiResponse(responseCode = "404", description = "Пользователь не найден")
   })
   ResponseEntity<User> getUserById(
           @Parameter(description = "Идентификатор пользователя", required = true)
-          @PathVariable String id);
+          @PathVariable Long id);
 
-  @Operation(summary = "Создание пользователя", description = "Создает нового пользователя")
+  @Operation(summary = "Создание пользователя")
   @ApiResponses({
           @ApiResponse(responseCode = "201", description = "Пользователь успешно создан"),
           @ApiResponse(responseCode = "400", description = "Ошибка валидации входных данных")
@@ -40,34 +36,23 @@ public interface UsersControllerApi {
           @Parameter(description = "Объект пользователя для создания", required = true)
           @RequestBody @Valid User user);
 
-  @Operation(summary = "Обновление пользователя", description = "Полное обновление пользователя")
+  @Operation(summary = "Обновление пользователя")
   @ApiResponses({
           @ApiResponse(responseCode = "200", description = "Пользователь успешно обновлен"),
           @ApiResponse(responseCode = "404", description = "Пользователь не найден")
   })
   ResponseEntity<User> updateUser(
           @Parameter(description = "Идентификатор пользователя", required = true)
-          @PathVariable String id,
+          @PathVariable Long id,
           @Parameter(description = "Обновленные данные пользователя", required = true)
           @RequestBody @Valid User user);
 
-  @Operation(summary = "Частичное обновление пользователя", description = "Обновляет только переданные поля пользователя")
-  @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Пользователь успешно обновлен"),
-          @ApiResponse(responseCode = "404", description = "Пользователь не найден")
-  })
-  ResponseEntity<User> patchUser(
-          @Parameter(description = "Идентификатор пользователя", required = true)
-          @PathVariable String id,
-          @Parameter(description = "Данные для частичного обновления пользователя", required = true)
-          @RequestBody User patchData);
-
-  @Operation(summary = "Удаление пользователя", description = "Удаляет пользователя по заданному идентификатору")
+  @Operation(summary = "Удаление пользователя")
   @ApiResponses({
           @ApiResponse(responseCode = "204", description = "Пользователь успешно удален"),
           @ApiResponse(responseCode = "404", description = "Пользователь не найден")
   })
   ResponseEntity<Void> deleteUser(
           @Parameter(description = "Идентификатор пользователя", required = true)
-          @PathVariable String id);
+          @PathVariable Long id);
 }

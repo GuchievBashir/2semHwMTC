@@ -1,15 +1,17 @@
 package mipt.guchievmb.hw1.model;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
+@Entity
+@Table(name = "courses")
 public class Course {
 
-  @Size(min = 10, max = 100)
-  private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  @NotEmpty
+  @Column(nullable = false)
   private String name;
 }

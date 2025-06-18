@@ -1,80 +1,47 @@
 package mipt.guchievmb.hw1.service;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import mipt.guchievmb.hw1.exception.BookNotFoundException;
+import mipt.guchievmb.hw1.exception.UserNotFoundException;
 import mipt.guchievmb.hw1.model.Book;
+import mipt.guchievmb.hw1.model.User;
 import mipt.guchievmb.hw1.repository.BooksRepository;
-import mipt.guchievmb.hw1.repository.BooksRepository;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
+import mipt.guchievmb.hw1.repository.UsersRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 
-@Slf4j
 @Service
+@RequiredArgsConstructor
 public class BooksService {
-  private final BooksRepository bookRepository;
 
-  public BooksService(BooksRepository bookRepository) {
-    this.bookRepository = bookRepository;
-  }
+  private final BooksRepository booksRepository;
+  private final UsersRepository usersRepository;
 
-  @Cacheable(value = "books", key = "'all'")
+  @Transactional(readOnly = true)
   public Collection<Book> getAllBooks() {
-    return bookRepository.getAllBooks();
+    return booksRepository.findAll();
   }
 
-  @Cacheable(value = "books", key = "#id")
-  public Book getBookById(String id) {
-    return bookRepository.getBookById(id)
+  @Transactional(readOnly = true)
+  public Book getBookById(Long id) {
+    return booksRepository.findById(id)
             .orElseThrow(() -> new BookNotFoundException(id));
   }
 
-  @Caching(
-          put = @CachePut(value = "books", key = "#result.id"),
-          evict = @CacheEvict(value = "books", key = "'all'")
-  )
-  public Book createBook(Book book) {
-    return bookRepository.createBook(book);
+  @Transactional
+  public Book createBook(Book book, Long authorId) {
+    User author = usersRepository.findById(authorId)
+            .orElseThrow(() -> new UserNotFoundException(authorId));
+    book.setAuthor(author);
+    return booksRepository.save(book);
   }
 
-  @Caching(
-          put = @CachePut(value = "books", key = "#book.id"),
-          evict = @CacheEvict(value = "books", key = "'all'")
-  )
-  public Book updateBook(Book book) {
-    Book existingBook = bookRepository.getBookById(book.getId())
-            .orElseThrow(() -> new BookNotFoundException(book.getId()));
-    existingBook.setTitle(book.getTitle());
-    existingBook.setAuthor(book.getAuthor());
-    return existingBook;
-  }
-
-  @Caching(
-          put = @CachePut(value = "books", key = "#id"),
-          evict = @CacheEvict(value = "books", key = "'all'")
-  )
-  public Book patchBook(String id, Book patchData) {
-    Book existingBook = bookRepository.getBookById(id)
-            .orElseThrow(() -> new BookNotFoundException(id));
-
-    if (patchData.getTitle() != null && !patchData.getTitle().isEmpty()) {
-      existingBook.setTitle(patchData.getTitle());
+  @Transactional
+  public void deleteBook(Long id) {
+    if (!booksRepository.existsById(id)) {
+      throw new BookNotFoundException(id);
     }
-    if (patchData.getAuthor() != null && !patchData.getAuthor().isEmpty()) {
-      existingBook.setAuthor(patchData.getAuthor());
-    }
-    return existingBook;
-  }
-
-  @Caching(evict = {
-          @CacheEvict(value = "books", key = "#id"),
-          @CacheEvict(value = "books", key = "'all'")
-  })
-  public void deleteBook(String id) {
-    bookRepository.deleteBookById(id);
+    booksRepository.deleteById(id);
   }
 }
