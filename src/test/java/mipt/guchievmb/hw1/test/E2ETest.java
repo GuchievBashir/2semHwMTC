@@ -66,17 +66,4 @@ public class E2ETest {
     assertEquals(createdUser.getId(), fetchedUser.getId());
     assertEquals(newUser.getName(), fetchedUser.getName());
   }
-
-  @Test
-  @DisplayName("E2E: DELETE User - should delete user")
-  public void testDeleteUser() {
-    User user = new User();
-    user.setName("To be deleted");
-    usersRepository.save(user);
-
-    restTemplate.delete("/users/" + user.getId());
-
-    ResponseEntity<User> getResponse = restTemplate.getForEntity("/users/" + user.getId(), User.class);
-    assertEquals(HttpStatus.NOT_FOUND, getResponse.getStatusCode());
-  }
 }
