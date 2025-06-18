@@ -17,9 +17,10 @@ import java.util.Collection;
 @RequestMapping("/universities")
 @Slf4j
 @RequiredArgsConstructor
-public class UniversitiesController {
+public class UniversitiesController implements UniversityControllerApi {
   private final UniversitiesService universitiesService;
 
+  @Override
   @GetMapping
   public ResponseEntity<Collection<University>> getUniversities() {
     Collection<University> universities = universitiesService.getAllUniversities();
@@ -27,6 +28,7 @@ public class UniversitiesController {
     return ResponseEntity.ok(universities);
   }
 
+  @Override
   @PostMapping
   public ResponseEntity<University> createUniversity(@Valid University university) {
     University createdUniversity = universitiesService.createUniversity(university);
