@@ -4,6 +4,7 @@ import mipt.guchievmb.hw1.controller.UsersController;
 import mipt.guchievmb.hw1.service.UsersService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class LoggingAspectTest {
 
   @Container
